@@ -1,0 +1,33 @@
+services:
+  mongo:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - architecture-network
+
+  java-app:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: java_app
+    environment:
+      APP_ID: Architecture-Monolithic-Service-Layer-Java
+      SERVER_PORT: 8080
+      MONGO_URI: mongodb://mongodb:27017/ArchitectureDB
+    depends_on:
+      - mongo
+    ports:
+      - "8080:8080"
+    networks:
+      - architecture-network
+
+volumes:
+  mongo-data:
+
+networks:
+  architecture-network:
+    driver: bridge
